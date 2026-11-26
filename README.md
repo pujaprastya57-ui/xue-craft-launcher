@@ -1,0 +1,87 @@
+# xue Craft launcher
+
+基于 Electron 的第三方非官方 Minecraft Windows 启动器，提供微软正版账号登录、游戏版本管理、加载器安装、Modrinth 资源检索与整合包更新等功能。
+
+[下载最新发行版](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/latest) · [查看 v1.5.1 发布说明](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/tag/v1.5.1)
+
+## 功能
+
+- 微软正版账号登录、账号切换与皮肤头像显示
+- Minecraft 原版全版本下载、版本隔离与 Java 环境管理
+- Fabric、Forge、NeoForge 加载器安装
+- Modrinth Mod 与整合包检索，支持中文检索词和常见资源中文名称
+- 拖入 `.mrpack` 整合包原地更新，保留存档、日志等用户数据
+- 安装与下载任务互斥，避免游戏文件未就绪时重复启动
+- 下载期间显示 Windows 任务栏进度
+- 导入启动器安装包进行原地覆盖升级
+- 内置服务条款、隐私政策、个人信息清单和三方信息共享清单
+
+## 下载与使用
+
+### 安装版（推荐）
+
+下载 `xueCraft-Setup-1.5.1.exe`，运行后按照安装向导操作。安装版支持桌面快捷方式、开始菜单快捷方式和自定义安装目录。
+
+### 便携版
+
+下载 `xueCraft-1.5.1-portable.exe`，无需安装即可运行。
+
+首次启动时需要阅读并同意内置法律与隐私条款。若旧版本的更新器存在异常，可直接运行最新安装版覆盖安装，无需先卸载旧版。
+
+## 本地开发
+
+### 环境要求
+
+- Windows 10/11 x64
+- Node.js 22 或更高版本
+- npm
+
+### 安装与启动
+
+```powershell
+npm install
+npm start
+```
+
+### 检查与构建
+
+```powershell
+# 核心模块自检
+npm run selftest
+
+# Electron 界面冒烟测试
+npm run smoke
+
+# 构建 NSIS 安装版与便携版
+npm run dist
+```
+
+构建结果默认输出到 `dist/`。`node_modules/`、`dist/`、日志和本地环境文件已通过 `.gitignore` 排除。
+
+## 目录结构
+
+```text
+src/main/       主进程、游戏安装、账号登录、下载与更新逻辑
+src/preload/    主进程与渲染进程之间的安全桥接
+src/renderer/   界面、样式、中文资源词典与法律文本
+scripts/        自检与图标处理脚本
+build/          安装包图标等构建资源
+```
+
+## 用户数据
+
+账号、配置、游戏版本、存档及其他用户数据保存在：
+
+```text
+%APPDATA%\TraeCraft
+```
+
+覆盖安装启动器不会主动清除该目录。账号配置中包含敏感登录信息，请勿公开分享。升级前建议备份重要存档。
+
+## 声明与许可
+
+- 本项目是第三方非官方启动器，不隶属于 Mojang Studios 或 Microsoft，也未获得其背书。
+- Minecraft、Mojang 及相关名称和素材的权利归各自权利人所有。
+- 本项目不内置 Minecraft 游戏资源，不提供游戏账号或破解功能。
+- Modrinth 资源的名称、简介、图标及文件版权归相应作者所有，使用时请遵守资源页面的许可条款。
+- 当前项目标记为 `UNLICENSED`，尚未选择开源许可证。公开仓库不代表授予复制、修改、再分发或商业使用许可。
