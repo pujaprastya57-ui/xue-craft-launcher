@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+    <title>xue Craft launcher</title>
+    <link rel="icon" href="icon.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="logo" src="icon.png" alt="" />
+          <div class="brand-text">
+            <strong>xue Craft</strong>
+            <span>UNOFFICIAL LAUNCHER</span>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <button class="nav-item active" data-view="home"><span class="ico">▶</span>启动游戏</button>
+          <button class="nav-item" data-view="versions"><span class="ico">▤</span>版本管理</button>
+          <button class="nav-item" data-view="download"><span class="ico">↓</span>下载游戏</button>
+          <button class="nav-item" data-view="modrinth"><span class="ico">✦</span>资源中心</button>
+          <button class="nav-item" data-view="account"><span class="ico">◉</span>账户</button>
+          <button class="nav-item" data-view="settings"><span class="ico">⚙</span>设置</button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="mini-account" id="accountMini">
+            <div class="avatar" id="miniAvatar">?</div>
+            <div class="mini-meta">
+              <strong id="miniName">未登录</strong>
+              <span id="miniSub">点击登录微软账号</span>
+            </div>
+          </div>
+          <div class="footer-version" id="footerVersion">xue Craft · 正版登录</div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h1 id="viewTitle">启动游戏</h1>
+            <p class="subtitle" id="viewSubtitle">选择版本，一键进入世界</p>
+          </div>
+          <div class="top-actions">
+            <button class="ghost-btn" id="btnLogs">查看日志</button>
+            <button class="ghost-btn" id="btnRefreshAll">刷新</button>
+            <div class="status-pill" id="statusPill"><i></i><span>就绪</span></div>
+          </div>
+        </header>
+
+        <div class="content">
+          <!-- 首页 -->
+          <section class="view active" id="view-home">
+            <div class="hero">
+              <div class="hero-art" id="heroArt">
+                <div class="hero-tag" id="heroLoader">原版</div>
+                <div class="hero-version" id="heroVersion">尚未安装版本</div>
+                <div class="hero-gameversion" id="heroGameVersion">请前往「下载游戏」安装原版</div>
+                <div class="hero-grid"></div>
+              </div>
+              <div class="hero-info">
+                <div class="field-row">
+                  <div class="field grow">
+                    <label>选择要启动的版本</label>
+                    <select id="launchVersionSelect"></select>
+                  </div>
+                  <button class="ghost-btn" id="btnVersionOptions">版本管理</button>
+                </div>
+
+                <div class="account-line" id="launchAccountLine">
+                  <div class="avatar small" id="launchAvatar">?</div>
+                  <div>
+                    <strong id="launchAccountName">未登录</strong>
+                    <span id="launchAccountSub">需要微软正版账号才能进入服务器</span>
+                  </div>
+                  <button class="ghost-btn slim" id="btnLoginQuick">登录</button>
+                </div>
+
+                <div class="memory-block">
+                  <div class="field-row between">
+                    <label>内存分配</label>
+                    <span class="mono" id="memoryLabel">4096 MB</span>
+                  </div>
+                  <input type="range" id="memoryRange" min="1024" max="16384" step="512" />
+                  <div class="hint">建议为 4GB – 8GB，模组较多时适当提高。</div>
+                </div>
+
+                <div class="launch-actions">
+                  <button class="primary-btn big" id="btnLaunch">启动游戏</button>
+                  <button class="ghost-btn" id="btnOpenGameDir">打开游戏目录</button>
+                </div>
+                <div class="meta-grid">
+                  <div><span>Java</span><strong id="javaInfo">未检测</strong></div>
+                  <div><span>版本隔离</span><strong id="isolationInfo">已开启</strong></div>
+                  <div><span>共享目录</span><strong class="mono" id="rootInfo">-</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel console-panel">
+              <div class="panel-head">
+                <h2>启动日志</h2>
+                <div class="row-gap">
+                  <button class="ghost-btn slim" id="btnClearConsole">清空</button>
+                  <button class="ghost-btn slim" id="btnOpenLogsInline">日志目录</button>
+                </div>
+              </div>
+              <pre class="console" id="console1">等待启动…</pre>
+            </div>
+          </section>
+
+          <!-- 版本管理 -->
+          <section class="view" id="view-versions">
+            <div class="panel">
+              <div class="panel-head">
+                <h2>本地版本</h2>
+                <div class="row-gap">
+                  <span class="muted" id="versionCount"></span>
+                  <button class="ghost-btn slim" id="btnImportPack">导入 / 更新整合包</button>
+                  <button class="ghost-btn slim" id="btnRefreshVersions">刷新列表</button>
+                </div>
+              </div>
+              <div class="version-list" id="versionList"></div>
+            </div>
+          </section>
+
+          <!-- 下载游戏 -->
+          <section class="view" id="view-download">
+            <div class="segmented" id="downloadTabs">
+              <button class="active" data-tab="vanilla">原版游戏</button>
+              <button data-tab="loader">Mod 加载器</button>
+            </div>
+
+            <div class="tab-panel active" id="tab-vanilla">
+              <div class="panel">
+                <div class="panel-head wrap">
+                  <div class="row-gap">
+                    <div class="segmented small" id="releaseFilter">
+                      <button class="active" data-type="release">正式版</button>
+                      <button data-type="snapshot">快照</button>
+                      <button data-type="all">全部</button>
+                    </div>
+                    <input class="search" id="versionSearch" placeholder="搜索版本号…" />
+                  </div>
+                  <button class="ghost-btn slim" id="btnRefreshManifest">刷新清单</button>
+                </div>
+                <div class="scroll-area" id="manifestList"></div>
+              </div>
+            </div>
+
+            <div class="tab-panel" id="tab-loader">
+              <div class="panel">
+                <div class="panel-head">
+                  <h2>安装 Mod 加载器</h2>
+                  <span class="muted">支持 Fabric / Forge / NeoForge</span>
+                </div>
+                <div class="form-grid">
+                  <div class="field">
+                    <label>Minecraft 版本</label>
+                    <select id="loaderMcVersion"></select>
+                  </div>
+                  <div class="field">
+                    <label>加载器</label>
+                    <select id="loaderType">
+                      <option value="fabric">Fabric</option>
+                      <option value="forge">Forge</option>
+                      <option value="neoforge">NeoForge</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>加载器版本</label>
+                    <select id="loaderVersion"></select>
+                  </div>
+                  <div class="field align-end">
+                    <button class="primary-btn" id="btnInstallLoader">安装加载器</button>
+                  </div>
+                </div>
+                <div class="hint" id="loaderHint">选择游戏版本后会自动加载可用加载器版本。</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 资源中心 -->
+          <section class="view" id="view-modrinth">
+            <div class="segmented" id="modrinthTabs">
+              <button class="active" data-type="mod">Mod</button>
+              <button data-type="modpack">整合包</button>
+              <button data-type="resourcepack">资源包</button>
+              <button data-type="shader">光影</button>
+              <button data-type="datapack">数据包</button>
+            </div>
+
+            <div class="panel toolbar-panel">
+              <div class="row-gap grow">
+                <input class="search grow" id="modrinthSearch" placeholder="搜索资源，支持中文（如：钠 / 优化 / 机械动力）" />
+                <select id="modrinthGameVersion" class="compact"><option value="">所有游戏版本</option></select>
+                <select id="modrinthLoader" class="compact">
+                  <option value="">所有加载器</option>
+                  <option value="fabric">Fabric</option>
+                  <option value="forge">Forge</option>
+                  <option value="neoforge">NeoForge</option>
+                  <option value="quilt">Quilt</option>
+                </select>
+                <select id="modrinthSort" class="compact">
+                  <option value="relevance">相关度</option>
+                  <option value="downloads">下载量</option>
+                  <option value="newest">最新发布</option>
+                  <option value="updated">最近更新</option>
+                </select>
+              </div>
+              <button class="primary-btn slim" id="btnModrinthSearch">搜索</button>
+            </div>
+            <div class="hint" id="modrinthHint">支持中文搜索，会自动转换为 Modrinth 英文检索词。资源名称与简介由作者填写，常见资源已内置中文名称。</div>
+            <div class="resource-grid" id="modrinthResults"></div>
+            <div class="load-more-wrap"><button class="ghost-btn" id="btnLoadMore">加载更多</button></div>
+          </section>
+
+          <!-- 账户 -->
+          <section class="view" id="view-account">
+            <div class="account-layout">
+              <div class="panel login-panel">
+                <div class="panel-head"><h2>微软正版登录</h2><span class="muted">Microsoft OAuth</span></div>
+                <p class="muted">
+                  推荐使用浏览器登录：启动器会打开微软官方登录窗口，登录完成后自动返回。启动器不会接触你的密码。
+                </p>
+                <button class="primary-btn big" id="btnLoginBrowser">浏览器登录（推荐）</button>
+                <button class="ghost-btn" id="btnLoginDevice" style="width:100%;margin-top:10px">使用设备代码登录</button>
+                <div class="device-code hidden" id="deviceCodeBox">
+                  <div class="code" id="deviceCode">--------</div>
+                  <div class="row-gap">
+                    <button class="ghost-btn slim" id="btnCopyCode">复制代码</button>
+                    <button class="ghost-btn slim" id="btnOpenLogin">打开登录页面</button>
+                  </div>
+                  <div class="hint" id="deviceCodeStatus">等待授权…</div>
+                </div>
+                <ul class="feature-list">
+                  <li>Xbox Live / XSTS 官方认证链路</li>
+                  <li>访问令牌本地加密保存并自动续期</li>
+                  <li>设备代码登录需在设置中填写自有 Entra 应用 ID</li>
+                </ul>
+              </div>
+              <div class="panel">
+                <div class="panel-head"><h2>已登录账号</h2><span class="muted" id="accountCount"></span></div>
+                <div class="account-list" id="accountList"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 设置 -->
+          <section class="view" id="view-settings">
+            <div class="panel">
+              <div class="panel-head"><h2>游戏与启动设置</h2><button class="primary-btn slim" id="btnSaveSettings">保存设置</button></div>
+              <div class="settings-grid">
+                <div class="field">
+                  <label>游戏根目录（libraries / assets / versions）</label>
+                  <div class="row-gap">
+                    <input id="setGameDir" readonly />
+                    <button class="ghost-btn slim" id="btnPickGameDir">选择</button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Java 可执行文件</label>
+                  <div class="row-gap">
+                    <select id="setJavaPath"></select>
+                    <button class="ghost-btn slim" id="btnPickJava">手动选择</button>
+                    <button class="ghost-btn slim" id="btnRescanJava">重新检测</button>
+                  </div>
+                  <div class="hint" id="javaHint">未指定时启动器会自动选择合适版本，缺失时自动下载 Temurin。</div>
+                </div>
+                <div class="field">
+                  <label>设备代码客户端 ID（高级）</label>
+                  <input id="setMsClientId" placeholder="00000000402b5328" />
+                  <div class="hint">仅「设备代码登录」使用，需填自有 Entra 应用 ID（已开启设备代码流）；浏览器登录始终使用官方 ID。</div>
+                </div>
+                <div class="field">
+                  <label>版本隔离</label>
+                  <label class="switch"><input type="checkbox" id="setIsolation" checked /><span></span>
+                    每个版本使用独立的 .minecraft 目录（存档 / mods 互不影响）</label>
+                </div>
+                <div class="field two-col">
+                  <div>
+                    <label>最小内存 (MB)</label>
+                    <input type="number" id="setMemoryMin" min="512" step="256" />
+                  </div>
+                  <div>
+                    <label>最大内存 (MB)</label>
+                    <input type="number" id="setMemoryMax" min="1024" step="256" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label>额外 JVM 参数</label>
+                  <input id="setJvmArgs" placeholder="-XX:+UseG1GC -Dfile.encoding=UTF-8" />
+                </div>
+                <div class="field">
+                  <label>额外游戏参数</label>
+                  <input id="setGameArgs" placeholder="--width 1280 --height 720" />
+                </div>
+                <div class="field two-col">
+                  <div>
+                    <label>下载并发数</label>
+                    <input type="number" id="setConcurrency" min="1" max="64" />
+                  </div>
+                  <div>
+                    <label>镜像加速</label>
+                    <label class="switch"><input type="checkbox" id="setMirror" checked /><span></span>官方源失败时使用 BMCLAPI 镜像</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><h2>启动器更新</h2><span class="muted">导入更新包覆盖升级</span></div>
+              <div class="about">
+                <div><span>当前版本</span><strong id="aboutVersion">xue Craft launcher</strong></div>
+                <div class="about-update-row">
+                  <div>
+                    <span>更新方式</span>
+                    <strong>导入 <span class="mono">xueCraft-Setup-x.x.x.exe</span> 即可覆盖升级，无需先卸载旧版本；账号、存档与设置保留。也可直接把安装包拖进窗口。</strong>
+                  </div>
+                  <button class="primary-btn slim" id="btnImportUpdater">导入更新包</button>
+                </div>
+                <div><span>数据目录</span><strong class="mono" id="aboutRoot">-</strong></div>
+                <div><span>认证方式</span><strong>Microsoft OAuth（浏览器授权 / 设备代码）</strong></div>
+                <div><span>资源来源</span><strong>Mojang Piston / Modrinth / Fabric Meta / Forge Maven</strong></div>
+                <div><span>开源许可</span><strong>基于 Electron / Chromium 构建，其许可文件随安装目录附带</strong></div>
+                <div class="about-legal">
+                  <span>免责声明</span>
+                  <strong>
+                    本启动器为第三方非官方工具，与 Mojang Studios、Microsoft、Modrinth 均无隶属或合作关系，也未获其背书。<br />
+                    Minecraft 及相关名称、商标归 Microsoft / Mojang Studios 所有；游戏文件全部来自官方服务器，使用前需自备正版账号。<br />
+                    Modrinth 上的资源名称、简介与下载内容版权归各原作者所有，安装或使用前请遵守其许可协议。
+                  </strong>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><h2>法律与隐私</h2><span class="muted">首次使用需同意以下协议</span></div>
+              <div class="legal-links">
+                <button class="ghost-btn slim" data-legal="tos">服务条款</button>
+                <button class="ghost-btn slim" data-legal="privacy">隐私政策</button>
+                <button class="ghost-btn slim" data-legal="personal">个人信息清单</button>
+                <button class="ghost-btn slim" data-legal="sharing">三方信息共享清单</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <div class="progress-card hidden" id="progressCard">
+      <div class="progress-top">
+        <div class="progress-title" id="progressTitle">安装中</div>
+        <button class="icon-btn" id="btnHideProgress">×</button>
+      </div>
+      <div class="progress-msg" id="progressMsg">准备中…</div>
+      <div class="progress-bar"><div id="progressFill"></div></div>
+      <div class="progress-meta"><span id="progressCount">0 / 0</span><span id="progressPercent">0%</span></div>
+    </div>
+
+    <div class="drop-overlay hidden" id="dropOverlay">
+      <div class="drop-card">
+        <div class="drop-icon">↓</div>
+        <strong>松开以导入文件</strong>
+        <span>支持 Modrinth 整合包（.mrpack）或 xue Craft launcher 安装包（.exe）</span>
+      </div>
+    </div>
+
+    <div class="modal-root" id="modalRoot"></div>
+    <div class="toast-root" id="toastRoot"></div>
+
+    <script src="modrinth-zh.js"></script>
+    <script src="legal.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+out/
+release/
+.screenshots/
+smoke/
+.env
+.env.*
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
