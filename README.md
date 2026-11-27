@@ -4,7 +4,7 @@
 
 基于 Electron 的第三方非官方 Minecraft Windows 启动器，提供微软正版账号登录、游戏版本管理、加载器安装、Modrinth 资源检索与整合包更新等功能。
 
-[下载最新发行版](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/latest) · [查看 v1.5.3 发布说明](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/tag/v1.5.3)
+[下载最新发行版](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/latest) · [查看 v1.5.3 发布说明](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/tag/v1.5.3) · [☕ 爱发电支持](https://ifdian.net/a/nxueingnb)
 
 ## 功能
 
@@ -110,6 +110,10 @@ D:\Games\xueCraft\
 覆盖安装启动器不会主动清除 `data` 目录。账号配置中包含敏感登录信息，请勿公开分享。升级前建议备份重要存档。
 
 旧版本使用的 `%APPDATA%\xueCraft` 或 `%APPDATA%\TraeCraft` 会在首次启动 v1.5.3 时自动迁移到上述目录，迁移成功后旧目录即被清空删除。
+
+## 支持本项目
+
+如果 xue Craft launcher 对你有帮助，欢迎到 [爱发电主页](https://ifdian.net/a/nxueingnb) 请我喝杯咖啡 ☕。你的支持是持续维护、修复问题和加入新功能的动力。
 
 ## 声明与许可
 
