@@ -2,7 +2,7 @@
 
 const path = require('node:path');
 const fs = require('node:fs');
-const { app, BrowserWindow, Menu, safeStorage, shell } = require('electron');
+const { app, BrowserWindow, Menu, safeStorage, shell, dialog } = require('electron');
 const paths = require('./core/paths');
 const microsoft = require('./auth/microsoft');
 const { registerIpc } = require('./ipc');
@@ -11,7 +11,33 @@ const SMOKE_TEST = process.argv.includes('--smoke-test');
 let mainWindow = null;
 
 // 启动器数据根目录（游戏、账号、配置）
-const LAUNCHER_ROOT = path.join(app.getPath('appData'), 'TraeCraft');
+let LAUNCHER_ROOT = path.join(app.getPath('appData'), 'xueCraft');
+
+// 兼容旧版本：把 %APPDATA%\TraeCraft 迁移到新目录。
+// 优先 rename（瞬间完成）；若被占用（如旧启动器仍在运行）则重试，
+// 持续失败时回退到旧目录继续运行——绝不创建空的新目录，避免老用户数据“丢失”。
+let migrationOk = true;
+function migrateLegacyDataDir() {
+  const oldRoot = path.join(app.getPath('appData'), 'TraeCraft');
+  if (!fs.existsSync(oldRoot) || fs.existsSync(LAUNCHER_ROOT)) return true;
+  let lastErr = null;
+  for (let i = 0; i < 6; i++) {
+    try {
+      fs.renameSync(oldRoot, LAUNCHER_ROOT);
+      return true;
+    } catch (err) {
+      lastErr = err;
+    }
+    try { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 300 * (i + 1)); } catch (_) {}
+  }
+  console.error('[xueCraft] 数据目录迁移失败，回退到旧目录:', lastErr && lastErr.message);
+  return false;
+}
+migrationOk = migrateLegacyDataDir();
+if (!migrationOk) {
+  LAUNCHER_ROOT = path.join(app.getPath('appData'), 'TraeCraft');
+}
+
 // Electron/Chromium 缓存单独存放，避免与游戏数据混淆
 app.setPath('userData', path.join(LAUNCHER_ROOT, '.cache'));
 
@@ -128,6 +154,16 @@ app.whenReady().then(() => {
   setupVault();
   registerIpc(() => mainWindow);
   createWindow();
+  if (!migrationOk) {
+    dialog.showMessageBox(mainWindow, {
+      type: 'warning',
+      title: '数据目录迁移',
+      message: '检测到旧版数据目录未能迁移到 %APPDATA%\\xueCraft。',
+      detail: '通常是旧版启动器仍在运行并占用了文件。本次将继续使用旧目录 %APPDATA%\\TraeCraft，账号、存档与配置不会丢失。请关闭所有正在运行的 xue Craft 启动器后重新打开，即可完成目录迁移。',
+      buttons: ['我知道了'],
+      noLink: true,
+    }).catch(() => {});
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
