@@ -1,8 +1,10 @@
 # xue Craft launcher
 
+当前最新版本：v1.5.2
+
 基于 Electron 的第三方非官方 Minecraft Windows 启动器，提供微软正版账号登录、游戏版本管理、加载器安装、Modrinth 资源检索与整合包更新等功能。
 
-[下载最新发行版](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/latest) · [查看 v1.5.1 发布说明](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/tag/v1.5.1)
+[下载最新发行版](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/latest) · [查看 v1.5.2 发布说明](https://github.com/pujaprastya57-ui/xue-craft-launcher/releases/tag/v1.5.2)
 
 ## 功能
 
@@ -20,13 +22,19 @@
 
 ### 安装版（推荐）
 
-下载 `xueCraft-Setup-1.5.1.exe`，运行后按照安装向导操作。安装版支持桌面快捷方式、开始菜单快捷方式和自定义安装目录。
+下载 `xueCraft-Setup-1.5.2.exe`，运行后按照安装向导操作。安装版支持桌面快捷方式、开始菜单快捷方式和自定义安装目录。
 
 ### 便携版
 
-下载 `xueCraft-1.5.1-portable.exe`，无需安装即可运行。
+下载 `xueCraft-1.5.2-portable.exe`，无需安装即可运行。
 
 首次启动时需要阅读并同意内置法律与隐私条款。若旧版本的更新器存在异常，可直接运行最新安装版覆盖安装，无需先卸载旧版。
+
+### 从旧版本升级（数据目录迁移）
+
+自 v1.5.2 起，用户数据目录由 `%APPDATA%\TraeCraft` 变更为 `%APPDATA%\xueCraft`。
+
+首次启动 v1.5.2 时会自动把旧目录整体迁移到新目录，账号、存档与配置不会丢失。升级前请先关闭正在运行的旧版启动器，避免文件被占用导致迁移失败；若迁移失败，启动器会继续使用旧目录并弹窗提示，数据不受影响，关闭旧版启动器后重启即可完成迁移。
 
 ## 本地开发
 
@@ -77,6 +85,8 @@ build/          安装包图标等构建资源
 ```
 
 覆盖安装启动器不会主动清除该目录。账号配置中包含敏感登录信息，请勿公开分享。升级前建议备份重要存档。
+
+旧版本使用的 `%APPDATA%\TraeCraft` 会在首次启动 v1.5.2 时自动迁移至上述目录。
 
 ## 声明与许可
 
