@@ -165,7 +165,7 @@
         acceptBtn.disabled = true;
         acceptBtn.textContent = '正在保存…';
         try {
-          await window.traecraft.config.save({
+          await window.xuecraft.config.save({
             legalAccepted: LEGAL_VERSION,
             legalAcceptedAt: new Date().toISOString(),
           });
@@ -189,7 +189,7 @@
   async function ensureAccepted() {
     let accepted = false;
     try {
-      const config = await window.traecraft.config.get();
+      const config = await window.xuecraft.config.get();
       accepted = config && config.legalAccepted === LEGAL_VERSION;
     } catch {
       accepted = false;
@@ -204,7 +204,7 @@
     });
   }
 
-  window.TraeCraftLegal = {
+  window.XueCraftLegal = {
     ensureAccepted,
     open: (docId) => show({ consent: false, docId }),
     isConsentVisible: () => Boolean(document.querySelector('.legal-mask')),

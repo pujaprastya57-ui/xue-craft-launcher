@@ -1,8 +1,8 @@
 'use strict';
 
-/* global traecraft */
+/* global xuecraft */
 
-const api = window.traecraft;
+const api = window.xuecraft;
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
@@ -214,7 +214,7 @@ async function init() {
   bindEvents();
   subscribeEvents();
   // 首次启动必须同意服务条款与隐私政策，否则退出
-  const accepted = await window.TraeCraftLegal.ensureAccepted();
+  const accepted = await window.XueCraftLegal.ensureAccepted();
   if (!accepted) {
     window.close();
     return;
@@ -588,7 +588,7 @@ async function searchModrinth(reset = false) {
   m.loading = true;
   $('#btnModrinthSearch').disabled = true;
   if (!m.hits.length) $('#modrinthResults').innerHTML = '<div class="empty">正在搜索 Modrinth…</div>';
-  const zh = window.TraeCraftZh.translateQuery(m.query);
+  const zh = window.XueCraftZh.translateQuery(m.query);
   const hint = $('#modrinthHint');
   if (hint) {
     hint.textContent = zh.changed
@@ -629,7 +629,7 @@ function renderModrinth() {
   }
   list.innerHTML = m.hits
     .map((hit) => {
-      const zh = window.TraeCraftZh.knownFor(hit.slug, hit.title);
+      const zh = window.XueCraftZh.knownFor(hit.slug, hit.title);
       const title = zh ? zh.zh : hit.title;
       const desc = (zh && zh.desc) || hit.description || '';
       const enTitle = zh && zh.zh !== hit.title ? `<span class="resource-en">${esc(hit.title)}</span>` : '';
@@ -678,7 +678,7 @@ async function openProjectModal(projectId) {
       .map((v) => `<option value="${esc(v.id)}" ${v.id === state.selectedVersion ? 'selected' : ''}>${esc(v.id)}（${esc(v.gameVersion)}）</option>`)
       .join('');
 
-    const zh = window.TraeCraftZh.knownFor(project.slug, project.title);
+    const zh = window.XueCraftZh.knownFor(project.slug, project.title);
     const projectTitle = zh ? zh.zh : project.title;
     const projectDesc = (zh && zh.desc) || project.description || '';
     const enTitle = zh && zh.zh !== project.title ? `<span class="resource-en">${esc(project.title)}</span>` : '';
@@ -693,8 +693,8 @@ async function openProjectModal(projectId) {
             <div class="chip-row" style="margin-top:8px">
               <span class="chip">${esc(type === 'mod' ? 'Mod' : type === 'modpack' ? '整合包' : type === 'resourcepack' ? '资源包' : type === 'shader' ? '光影' : '数据包')}</span>
               <span class="chip">↓ ${Number(project.downloads || 0).toLocaleString('en-US')}</span>
-              ${(project.loaders || []).slice(0, 4).map((l) => `<span class="chip">${esc(window.TraeCraftZh.loaderName(l))}</span>`).join('')}
-              ${(project.categories || []).slice(0, 4).map((c) => `<span class="chip">${esc(window.TraeCraftZh.categoryName(c))}</span>`).join('')}
+              ${(project.loaders || []).slice(0, 4).map((l) => `<span class="chip">${esc(window.XueCraftZh.loaderName(l))}</span>`).join('')}
+              ${(project.categories || []).slice(0, 4).map((c) => `<span class="chip">${esc(window.XueCraftZh.categoryName(c))}</span>`).join('')}
             </div>
           </div>
           <button class="icon-btn" data-close-modal>×</button>
@@ -722,9 +722,9 @@ async function openProjectModal(projectId) {
                 <label class="version-option ${v.id === versions[0]?.id ? 'selected' : ''}" data-version-option="${esc(v.id)}">
                   <div class="v-main">
                     <strong>${esc(v.version_number)}</strong>
-                    <span>${esc((v.game_versions || []).slice(0, 4).join(', '))} · ${esc((v.loaders || []).map((l) => window.TraeCraftZh.loaderName(l)).join(', '))}</span>
+                    <span>${esc((v.game_versions || []).slice(0, 4).join(', '))} · ${esc((v.loaders || []).map((l) => window.XueCraftZh.loaderName(l)).join(', '))}</span>
                   </div>
-                  <span class="badge">${esc(window.TraeCraftZh.versionTypeName(v.version_type))}</span>
+                  <span class="badge">${esc(window.XueCraftZh.versionTypeName(v.version_type))}</span>
                 </label>`
               )
               .join('')}
@@ -1072,7 +1072,7 @@ function hideProgressLater(delay = 900) {
 /* ---------------- 事件绑定 ---------------- */
 function bindEvents() {
   $$('[data-legal]').forEach((btn) => {
-    btn.addEventListener('click', () => window.TraeCraftLegal.open(btn.dataset.legal));
+    btn.addEventListener('click', () => window.XueCraftLegal.open(btn.dataset.legal));
   });
   $$('.nav-item').forEach((btn) => btn.addEventListener('click', () => switchView(btn.dataset.view)));
 
@@ -1120,7 +1120,7 @@ function bindEvents() {
   $('#btnImportPack').addEventListener('click', pickPackFile);
   $('#btnImportUpdater').addEventListener('click', importUpdaterFile);
 
-  // 拖入 .mrpack：直接安装，或原地更新同名整合包；拖入 TraeCraft 安装包：覆盖升级
+  // 拖入 .mrpack：直接安装，或原地更新同名整合包；拖入 xueCraft 安装包：覆盖升级
   let dragDepth = 0;
   const hasFileDrag = (event) =>
     Boolean(event.dataTransfer && Array.from(event.dataTransfer.types || []).includes('Files'));

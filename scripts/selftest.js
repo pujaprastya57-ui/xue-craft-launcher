@@ -15,7 +15,7 @@ const meta = require('../src/main/mc/meta');
 const modrinthApi = require('../src/main/modrinth/api');
 const fabric = require('../src/main/loaders/fabric');
 
-paths.init(path.join(os.tmpdir(), 'traecraft-selftest'));
+paths.init(path.join(os.tmpdir(), 'xuecraft-selftest'));
 
 function crc32(buffer) {
   let table = crc32.table;

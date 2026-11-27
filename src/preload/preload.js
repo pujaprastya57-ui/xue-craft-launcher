@@ -5,7 +5,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const invoke = (channel, payload) => ipcRenderer.invoke(channel, payload);
 const EVENTS = ['progress', 'game:log', 'game:exit', 'auth:state', 'auth:error', 'auth:status'];
 
-contextBridge.exposeInMainWorld('traecraft', {
+contextBridge.exposeInMainWorld('xuecraft', {
   info: () => invoke('app:info'),
 
   config: {

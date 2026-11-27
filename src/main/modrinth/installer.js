@@ -18,6 +18,16 @@ const CONTENT_DIRS = {
   shader: 'shaderpacks',
 };
 
+/**
+ * 读取整合包元数据文件，文件名形如 xuecraft-pack.json / xuecraft-pack-files.json。
+ * 旧版本使用 traecraft- 前缀，读取时自动回退以兼容已安装的整合包。
+ */
+async function readPackJson(dir, name) {
+  const current = await paths.readJson(path.join(dir, `xuecraft-${name}`), null);
+  if (current) return current;
+  return paths.readJson(path.join(dir, `traecraft-${name}`), null);
+}
+
 function safeJoin(base, relative) {
   const target = path.resolve(base, relative.replace(/^[/\\]+/, ''));
   const root = path.resolve(base);
@@ -175,7 +185,7 @@ async function findExistingPackId(name, mcVersion) {
   }
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
-    const packMeta = await paths.readJson(path.join(paths.dirs.versions(), entry.name, 'traecraft-pack.json'), null);
+    const packMeta = await readPackJson(path.join(paths.dirs.versions(), entry.name), 'pack.json');
     if (!packMeta) continue;
     if (packMeta.gameVersion && packMeta.gameVersion !== mcVersion) continue;
     if (slugify(packMeta.title || '') === slug) return entry.name;
@@ -264,8 +274,8 @@ async function installModpackBuffer(zipBuffer, { report, packMeta = {} } = {}) {
   const packDir = paths.dirs.version(packId);
   const packJsonPath = path.join(packDir, `${packId}.json`);
   const updating = fs.existsSync(packJsonPath);
-  const oldMeta = updating ? await paths.readJson(path.join(packDir, 'traecraft-pack.json'), null) : null;
-  let oldManifest = updating ? await paths.readJson(path.join(packDir, 'traecraft-pack-files.json'), null) : null;
+  const oldMeta = updating ? await readPackJson(packDir, 'pack.json') : null;
+  let oldManifest = updating ? await readPackJson(packDir, 'pack-files.json') : null;
   if (updating && !oldManifest) oldManifest = await legacyManifestFromMeta(oldMeta);
 
   // 1. 安装对应的加载器版本
@@ -299,12 +309,12 @@ async function installModpackBuffer(zipBuffer, { report, packMeta = {} } = {}) {
   const removed = updating ? await removeStalePackFiles(packDir, oldManifest, managedFiles) : 0;
 
   // 5. 记录整合包信息与托管文件清单，供下次更新时清理旧文件
-  await paths.writeJson(path.join(packDir, 'traecraft-pack-files.json'), {
+  await paths.writeJson(path.join(packDir, 'xuecraft-pack-files.json'), {
     files: files.map((f) => normalizeRel(f.path)),
     overrides: overrideResult.files,
   });
-  await fsp.writeFile(path.join(packDir, 'traecraft-pack-index.json'), JSON.stringify(indexJson, null, 2), 'utf8');
-  await paths.writeJson(path.join(packDir, 'traecraft-pack.json'), {
+  await fsp.writeFile(path.join(packDir, 'xuecraft-pack-index.json'), JSON.stringify(indexJson, null, 2), 'utf8');
+  await paths.writeJson(path.join(packDir, 'xuecraft-pack.json'), {
     projectId: packMeta.projectId || (oldMeta && oldMeta.projectId) || '',
     slug: packMeta.slug || (oldMeta && oldMeta.slug) || '',
     title,

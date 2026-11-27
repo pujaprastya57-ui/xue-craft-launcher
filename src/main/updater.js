@@ -136,7 +136,7 @@ async function applyInstaller(filePath, { getWindow } = {}) {
   const detail = same
     ? '该版本与当前启动器版本相同，仍可重新安装以修复损坏的文件。'
     : newer
-      ? '更新完成后会自动启动新版本；账号、存档与设置保存在 %APPDATA%\\xueCraft，不会丢失。'
+      ? '更新完成后会自动启动新版本；账号、存档与设置都保存在安装目录的 data 文件夹内，不会丢失。'
       : '该更新包版本低于当前版本，安装后会降级到旧版本。';
 
   const result = await dialog.showMessageBox(getWindow ? getWindow() : undefined, {

@@ -1,7 +1,7 @@
 {
-  "name": "traecraft-launcher",
+  "name": "xuecraft-launcher",
   "productName": "xue Craft launcher",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "第三方非官方 Minecraft 启动器：微软账号登录、原版全版本下载、版本隔离、Modrinth 资源与整合包、Fabric/Forge/NeoForge 支持",
   "author": "xue Craft launcher",
   "license": "UNLICENSED",
@@ -19,7 +19,7 @@
     "electron-builder": "^26.0.0"
   },
   "build": {
-    "appId": "com.traecraft.launcher",
+    "appId": "com.xuecraft.launcher",
     "productName": "xue Craft launcher",
     "copyright": "Copyright © 2026 xue Craft launcher",
     "directories": {

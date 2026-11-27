@@ -357,5 +357,5 @@
     return VERSION_TYPE_ZH[value] || value;
   }
 
-  window.TraeCraftZh = { knownFor, translateQuery, categoryName, loaderName, versionTypeName };
+  window.XueCraftZh = { knownFor, translateQuery, categoryName, loaderName, versionTypeName };
 })();
